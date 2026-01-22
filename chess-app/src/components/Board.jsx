@@ -1,4 +1,5 @@
 import { use, useEffect , useState} from "react";
+import { showPossibleMoves } from "../utils/utils";
 import Piece from "./Piece";
 
 const boardArray = [
@@ -14,11 +15,16 @@ const boardArray = [
 function Board() {
 
     const [selectedPiece, setSelectedPiece] = useState('');
+    const [boardState, setBoardState] = useState(boardArray);
+    const [possibleMoves, setPossibleMoves] = useState([]);
+
 
     useEffect(() => {
     if (!selectedPiece) return;
     console.log("Selected piece:", selectedPiece);
-    //showPossibleMoves(selectedPiece, boardArray);
+    const possibleMoves = showPossibleMoves(selectedPiece, boardState);
+    setPossibleMoves(possibleMoves);
+    console.log('Movimientos posibles',possibleMoves);
     }, [selectedPiece]);
 
   return (
@@ -28,7 +34,12 @@ function Board() {
             {boardArray.map((row, rowIndex) => (
                 row.map((cell, cellIndex) => {
                     const isLight = (rowIndex + cellIndex) % 2 === 0;
-                     return <Piece piece={cell} isLight={isLight} handleSelectPiece={setSelectedPiece} key={`${rowIndex}-${cellIndex}`}></Piece>
+                    const piece = {
+                        name: cell,
+                        rowIndex: rowIndex,
+                        cellIndex: cellIndex
+                    }
+                     return <Piece piece={piece} possibleMoves={possibleMoves} isLight={isLight} handleSelectPiece={setSelectedPiece} key={`${rowIndex}-${cellIndex}`}></Piece>
                 })
             ))}
         </div>
