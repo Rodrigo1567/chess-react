@@ -10,8 +10,6 @@
 // import wQueen from '../assets/pieces/w_queen.svg';
 // import bKing from '../assets/pieces/b_king.svg';
 // import wKing from '../assets/pieces/w_king.svg';
-
-function Piece({ piece , isLight , handleSelectPiece, possibleMoves}) {
 const PIECES = {
   r: "fa-solid fa-chess-rook",
   R: "fa-regular fa-chess-rook",
@@ -28,14 +26,15 @@ const PIECES = {
   '': '',
 };
 
+function Piece({ piece , isLight , handleSelectPiece, possibleMoves, currentTurn}) {
+ const isAPossibleMove = possibleMoves.some(move => move[0] === piece.rowIndex && move[1] === piece.cellIndex);
   return (
     <div className={`piece`} onClick={() => handleSelectPiece(piece)}>
-        <div className={ (isLight ? "cell-light-chess" : "cell-dark-chess") + `${possibleMoves.some(move => move[0] === piece.rowIndex && move[1] === piece.cellIndex) ? ' possible-move' : ''}`} >
-          {/* {console.log('Piece en formato objeto',piece)} */}
+        <div className={ (isLight ? "cell-light-chess" : "cell-dark-chess") + `${isAPossibleMove ? (currentTurn === 'W' ? ' possible-move-white' : ' possible-move-black') : ''}`} >
            {piece ?  <i className={PIECES[piece.name]}></i> : <div></div>}
         </div>
     </div>
   ) 
-}
+};
 
 export default Piece
