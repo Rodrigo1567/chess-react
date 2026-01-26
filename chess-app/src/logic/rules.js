@@ -1,37 +1,26 @@
 export function showPossibleMoves(piece, position, board) {
+    console.log('Calculating moves for piece:', piece, 'at position:', position);
     if(!piece) return [];
-    switch (piece.name) {   
-        case 'p': // black pawn
+    switch (piece.type) {   
+        case 'pawn': // black pawn
             return possibleMovesForPawn(position,piece.color,board); // Example moves
-        case 'P': // white pawn
-            return possibleMovesForPawn(position,piece.color,board);
-        case 'r': // black rook
+        case 'rook': // black rook
             return possibleMovesForRook(position,piece.color,board); // Example moves
-        case 'R': // white rook
-            return possibleMovesForRook(position,piece.color,board); // Example moves
-        case 'n': // black knight
+        case 'knight': // black knight
             return possibleMovesForKnight(position,piece.color,board); // Example moves
-        case 'N': // white knight  
-            return possibleMovesForKnight(position,piece.color,board); // Example moves
-        case 'b': // black bishop
-            return possibleMovesForBishop(position,piece.color,board); // Example moves
-        case 'B': // white bishop
+        case 'bishop': // black bishop
             return possibleMovesForBishop(position,piece.color,board); // Example moves 
-        case 'q': // black queen
+        case 'queen': // black queen
             return possibleMovesForQueen(position,piece.color,board); // Example moves
-        case 'Q': // white queen
-            return possibleMovesForQueen(position,piece.color,board); // Example moves
-        case 'k': // black king
+        case 'king': // black king
             return possibleMovesForKing(position,piece.color,board); // Example moves
-        case 'K': // white king
-            return possibleMovesForKing(position,piece.color,board); // Example moves
+
     }
 
     return [];
 }
 
-function possibleMovesForPawn(position, color, board) {
-    if(!piece) return [];
+function possibleMovesForPawn(position, color) {
     if(color === 'white') {
         if(position.row == 0) return [];
         return [[position.row - 1, position.col]];
@@ -42,8 +31,7 @@ function possibleMovesForPawn(position, color, board) {
 
 }
 
-function possibleMovesForRook(position, color, board) {
-    if(!piece) return [];
+function possibleMovesForRook(position, color) {
     let moves = [];
     const directions = [
         { dr: 1, dc: 0 },
@@ -55,43 +43,54 @@ function possibleMovesForRook(position, color, board) {
     for (let { dr, dc } of directions) {
         let r = position.row + dr;
         let c = position.col + dc;
-        while (isInsideofBoard(r, c)) {
-            
+        while (isInsideBoard(r, c)) {
+            moves.push([r, c]);
+            r += dr;
+            c += dc;
         }
     }
+    return moves
 }
 
-function possibleMovesForKnight(position, color, board) {
-    if(!piece) return [];
+function possibleMovesForKnight(position, color) {
     let actualPosition = {
-        row: piece.rowIndex,
-        col: piece.cellIndex
-    }
+        row: position.row,
+        col: position.col
+    };
+
+    const jumps = [
+        { dr: 2, dc: 1 },
+        { dr: 2, dc: -1 },
+        { dr: -2, dc: 1 },
+        { dr: -2, dc: -1 },
+        { dr: 1, dc: 2 },
+        { dr: 1, dc: -2 },
+        { dr: -1, dc: 2 },
+        { dr: -1, dc: -2 },
+    ];
     let moves = [];
-    // Knight moves in an L-shape: 2 squares in one direction and 1 square perpendicular
-    moves.push([actualPosition.row + 2, actualPosition.col + 1]);
-    moves.push([actualPosition.row + 2, actualPosition.col - 1]);
-    moves.push([actualPosition.row - 2, actualPosition.col + 1]);
-    moves.push([actualPosition.row - 2, actualPosition.col - 1]);
-    moves.push([actualPosition.row + 1, actualPosition.col + 2]);
-    moves.push([actualPosition.row + 1, actualPosition.col - 2]);
-    moves.push([actualPosition.row - 1, actualPosition.col + 2]);
-    moves.push([actualPosition.row - 1, actualPosition.col - 2]);
+    
+    for (const { dr, dc } of jumps) {
+        const r = actualPosition.row + dr;
+        const c = actualPosition.col + dc;
+        if (isInsideBoard(r, c)) {
+            moves.push([r, c]);
+        }
+    }
 
     return moves;
 }
-function possibleMovesForBishop(position, color, board) {
-    if(!piece) return [];
+function possibleMovesForBishop(position, color) {
     let actualPosition = { 
-        row: piece.rowIndex,
-        col: piece.cellIndex
+        row: position.row,
+        col: position.col
     };
     let moves = [];
     let directions = [[1,1], [1,-1], [-1,1], [-1,-1]];
     for (let [dr, dc] of directions) {
         let r = actualPosition.row + dr;
         let c = actualPosition.col + dc;
-        while (r >= 0 && r < 8 && c >= 0 && c < 8) {
+        while (isInsideBoard(r, c)) {
             moves.push([r, c]);
             r += dr;
             c += dc;
@@ -101,22 +100,20 @@ function possibleMovesForBishop(position, color, board) {
 }
 
 function possibleMovesForQueen(position, color, board) {
-    if(!piece) return [];
-    let actualPosition = {
-        row: piece.rowIndex,
-        col: piece.cellIndex
+    let actualPosition = { 
+        row: position.row,
+        col: position.col
     };
     let moves = [];
-    moves.push(...possibleMovesForRook(piece));
-    moves.push(...possibleMovesForBishop(piece));
+    moves.push(...possibleMovesForRook(position, color));
+    moves.push(...possibleMovesForBishop(position, color));
     return moves;   
 }
 
 function possibleMovesForKing(position, color, board) {
-    if(!piece) return [];
     let actualPosition = {
-        row: piece.rowIndex,
-        col: piece.cellIndex
+        row: position.row,
+        col: position.col
     };
     let moves = [];
 
@@ -132,3 +129,13 @@ function possibleMovesForKing(position, color, board) {
     }
     return moves;
 }
+
+
+const isInsideBoard = (row, col) =>
+  row >= 0 && row < 8 && col >= 0 && col < 8;
+
+const isEmpty = (board, row, col) =>
+  board[row][col] === null;
+
+const isEnemy = (board, row, col, color) =>
+  board[row][col] && board[row][col].color !== color;

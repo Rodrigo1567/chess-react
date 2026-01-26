@@ -1,7 +1,7 @@
 import { showPossibleMoves } from '../logic/rules';
 import Board from './Board';
 import GameInfo from './GameInfo';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const initialBoard = [
   [
@@ -32,18 +32,51 @@ const initialBoard = [
   ],
 ];
 
+const TURNS = {
+  WHITE: 'white',
+  BLACK: 'black',
+};
+
 function Game() {
 const [board, setBoard] = useState(initialBoard);
-const [turn, setTurn] = useState('white');
+const [turn, setTurn] = useState(() => {
+    const turnFromStorage = window.localStorage.getItem('turn')
+    return turnFromStorage ?? TURNS.WHITE
+})
 const [selected, setSelected] = useState(null);
-
+const [moves, setMoves] = useState([]);
 
 const handleSquareClick = (row, col, piece) => {
-    // lógica principal (más adelante)
-    const moves = selected ? showPossibleMoves(piece, {row, col}, board) : [];
-    console.log('Possible moves:', moves);
-    setSelected({ row, col });
+  console.log('Square clicked:', row, col, piece);
+    if(selected != null && selected.piece != null && isAPossibleMove(row, col, moves)) {
+        updateBoard(row, col);
+        return;
+    }
+    setSelected({ piece, row, col });
+   
 };
+
+const isAPossibleMove = (row, col, moves) => {
+    return moves.some(move => move[0] === row && move[1] === col);
+}
+
+function updateBoard(row, col) {
+  const newBoard = board.map((r) => r.slice());
+  newBoard[row][col] = selected.piece;
+  newBoard[selected.row][selected.col] = null;
+  setBoard(newBoard);
+  setSelected(null);
+  setMoves([]);
+  setTurn(turn === 'white' ? 'black' : 'white');
+}
+
+useEffect(() => {
+  if(!selected) return;
+    let position = selected ? { row: selected.row, col: selected.col } : null;
+    const moves = selected ? showPossibleMoves(selected.piece, position, board) : [];
+    setMoves(moves);
+    console.log('Possible moves:', moves);
+}, [selected]);
 
   return (
     <div className="game">
@@ -52,6 +85,8 @@ const handleSquareClick = (row, col, piece) => {
         board={board}
         onSquareClick={handleSquareClick}
         selected={selected}
+        possibleMoves={moves}
+        turn={turn}
       />
       <GameInfo turn={turn} />
     </div>

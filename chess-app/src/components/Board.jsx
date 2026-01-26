@@ -2,11 +2,11 @@ import { use, useEffect , useState} from "react";
 import Square from "./Square";
 
 
-function Board({board, onSquareClick, selected}) {
+function Board({board, onSquareClick, selected, possibleMoves, turn}) {
 
   return (
     <>
-    {console.log('Board',board)}
+    {console.log('Posibles movimientos',possibleMoves)}
         <h2 className="title-app">Chess App</h2>
         <div className="board-chess">
             {board.map((row, rowIndex) => (
@@ -16,7 +16,9 @@ function Board({board, onSquareClick, selected}) {
                              col={colIndex}
                              piece={piece}
                              isSelected={selected && selected.row === rowIndex && selected.col === colIndex}
-                             onClick={onSquareClick}>
+                             isPossibleMove={possibleMoves.some(move => move[0] === rowIndex && move[1] === colIndex)}
+                             onClick={onSquareClick}
+                             turn={turn}>
                      </Square>
 
                 })

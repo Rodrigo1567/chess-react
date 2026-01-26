@@ -34,7 +34,7 @@ i.fa-solid{
   color: black
 }
 
-.piece{
+.clickable{
   cursor: pointer;
 }
 
@@ -44,4 +44,8 @@ i.fa-solid{
 
 .piece .possible-move-black {
   background-color: rgb(2, 3, 0) !important;
+}
+
+.possible-move{
+  border: 2px solid red;
 }
