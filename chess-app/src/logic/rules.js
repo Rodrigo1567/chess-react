@@ -1,5 +1,4 @@
 export function showPossibleMoves(piece, position, board) {
-    console.log('Calculating moves for piece:', piece, 'at position:', position);
     if(!piece) return [];
     switch (piece.type) {   
         case 'pawn': // black pawn
@@ -31,7 +30,7 @@ function possibleMovesForPawn(position, color) {
 
 }
 
-function possibleMovesForRook(position, color) {
+function possibleMovesForRook(position, color, board) {
     let moves = [];
     const directions = [
         { dr: 1, dc: 0 },
@@ -43,7 +42,7 @@ function possibleMovesForRook(position, color) {
     for (let { dr, dc } of directions) {
         let r = position.row + dr;
         let c = position.col + dc;
-        while (isInsideBoard(r, c)) {
+        while (canExecuteMove(board, r, c, color)) {
             moves.push([r, c]);
             r += dr;
             c += dc;
@@ -52,7 +51,7 @@ function possibleMovesForRook(position, color) {
     return moves
 }
 
-function possibleMovesForKnight(position, color) {
+function possibleMovesForKnight(position, color,board) {
     let actualPosition = {
         row: position.row,
         col: position.col
@@ -73,14 +72,14 @@ function possibleMovesForKnight(position, color) {
     for (const { dr, dc } of jumps) {
         const r = actualPosition.row + dr;
         const c = actualPosition.col + dc;
-        if (isInsideBoard(r, c)) {
+        if (canExecuteMove(board, r, c, color)) {
             moves.push([r, c]);
         }
     }
 
     return moves;
 }
-function possibleMovesForBishop(position, color) {
+function possibleMovesForBishop(position, color,board) {
     let actualPosition = { 
         row: position.row,
         col: position.col
@@ -90,7 +89,7 @@ function possibleMovesForBishop(position, color) {
     for (let [dr, dc] of directions) {
         let r = actualPosition.row + dr;
         let c = actualPosition.col + dc;
-        while (isInsideBoard(r, c)) {
+        while (canExecuteMove(board, r, c, color)) {
             moves.push([r, c]);
             r += dr;
             c += dc;
@@ -122,7 +121,7 @@ function possibleMovesForKing(position, color, board) {
             if (dr === 0 && dc === 0) continue;
             let r = actualPosition.row + dr;
             let c = actualPosition.col + dc;
-            if (r >= 0 && r < 8 && c >= 0 && c < 8) {
+            if(canExecuteMove(board, r, c, color)) {
                 moves.push([r, c]);
             }
         }
@@ -134,8 +133,15 @@ function possibleMovesForKing(position, color, board) {
 const isInsideBoard = (row, col) =>
   row >= 0 && row < 8 && col >= 0 && col < 8;
 
-const isEmpty = (board, row, col) =>
-  board[row][col] === null;
+const isEmpty = (board, row, col) => {
+    console.log('Checking if position is empty:', row, col, 'Value:', board[row][col]);
+    return board[row][col] == null;
+}
 
-const isEnemy = (board, row, col, color) =>
-  board[row][col] && board[row][col].color !== color;
+const isEnemy = (board, row, col, color) =>{
+    return board[row][col] && board[row][col].color !== color;
+}
+
+const canExecuteMove = (board, row, col, color) => {
+    return isInsideBoard(row, col) && !isEnemy(board, row, col, color) && isEmpty(board, row, col);
+}
