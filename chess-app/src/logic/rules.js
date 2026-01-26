@@ -1,78 +1,67 @@
-export function showPossibleMoves(piece, board) {
-    // Placeholder logic for possible moves
-    console.log(`Calculating possible moves for piece: `, piece, board);
-    // This function would contain the actual logic to calculate and return possible moves
-
+export function showPossibleMoves(piece, position, board) {
+    if(!piece) return [];
     switch (piece.name) {   
         case 'p': // black pawn
-            return possibleMovesForPawn(piece,board); // Example moves
+            return possibleMovesForPawn(position,piece.color,board); // Example moves
         case 'P': // white pawn
-            return possibleMovesForPawn(piece,board);
+            return possibleMovesForPawn(position,piece.color,board);
         case 'r': // black rook
-            return possibleMovesForRook(piece,board); // Example moves
+            return possibleMovesForRook(position,piece.color,board); // Example moves
         case 'R': // white rook
-            return possibleMovesForRook(piece,board); // Example moves
+            return possibleMovesForRook(position,piece.color,board); // Example moves
         case 'n': // black knight
-            return possibleMovesForKnight(piece,board); // Example moves
+            return possibleMovesForKnight(position,piece.color,board); // Example moves
         case 'N': // white knight  
-            return possibleMovesForKnight(piece,board); // Example moves
+            return possibleMovesForKnight(position,piece.color,board); // Example moves
         case 'b': // black bishop
-            return possibleMovesForBishop(piece,board); // Example moves
+            return possibleMovesForBishop(position,piece.color,board); // Example moves
         case 'B': // white bishop
-            return possibleMovesForBishop(piece,board); // Example moves 
+            return possibleMovesForBishop(position,piece.color,board); // Example moves 
         case 'q': // black queen
-            return possibleMovesForQueen(piece,board); // Example moves
+            return possibleMovesForQueen(position,piece.color,board); // Example moves
         case 'Q': // white queen
-            return possibleMovesForQueen(piece,board); // Example moves
+            return possibleMovesForQueen(position,piece.color,board); // Example moves
         case 'k': // black king
-            return possibleMovesForKing(piece,board); // Example moves
+            return possibleMovesForKing(position,piece.color,board); // Example moves
         case 'K': // white king
-            return possibleMovesForKing(piece,board); // Example moves
+            return possibleMovesForKing(position,piece.color,board); // Example moves
     }
 
     return [];
 }
 
-function possibleMovesForPawn(piece) {
+function possibleMovesForPawn(position, color, board) {
     if(!piece) return [];
-    let actualPosition = {
-        row: piece.rowIndex,
-        col: piece.cellIndex
+    if(color === 'white') {
+        if(position.row == 0) return [];
+        return [[position.row - 1, position.col]];
     }
-    if(actualPosition.row == 8 || actualPosition.col == 8) return [];
-    return [[actualPosition.row + 1, actualPosition.col]];
+
+    if(position.row == 8 || position.col == 8) return [];
+    return [[position.row + 1, position.col]];
 
 }
 
-function possibleMovesForRook(piece) {
+function possibleMovesForRook(position, color, board) {
     if(!piece) return [];
-    let actualPosition = {
-        row: piece.rowIndex,
-        col: piece.cellIndex
-    }
     let moves = [];
-    while(actualPosition.row < 8) {
-        moves.push([actualPosition.row + 1, actualPosition.col]);
-        actualPosition.row++;
+    const directions = [
+        { dr: 1, dc: 0 },
+        { dr: -1, dc: 0 },
+        { dr: 0, dc: 1 },
+        { dr: 0, dc: -1 },
+    ];
+    
+    for (let { dr, dc } of directions) {
+        let r = position.row + dr;
+        let c = position.col + dc;
+        while (isInsideofBoard(r, c)) {
+            
+        }
     }
-    actualPosition.row = piece.rowIndex;
-    while(actualPosition.row > 0) {
-        moves.push([actualPosition.row - 1, actualPosition.col]);
-        actualPosition.row--;
-    }
-    while(actualPosition.col < 8) {
-        moves.push([actualPosition.row, actualPosition.col + 1]);
-        actualPosition.col++;
-    }
-    actualPosition.col = piece.cellIndex;
-    while(actualPosition.col > 0) {
-        moves.push([actualPosition.row, actualPosition.col - 1]);
-        actualPosition.col--;
-    }
-    return moves;
 }
 
-function possibleMovesForKnight(piece) {
+function possibleMovesForKnight(position, color, board) {
     if(!piece) return [];
     let actualPosition = {
         row: piece.rowIndex,
@@ -91,7 +80,7 @@ function possibleMovesForKnight(piece) {
 
     return moves;
 }
-function possibleMovesForBishop(piece) {
+function possibleMovesForBishop(position, color, board) {
     if(!piece) return [];
     let actualPosition = { 
         row: piece.rowIndex,
@@ -111,7 +100,7 @@ function possibleMovesForBishop(piece) {
     return moves;
 }
 
-function possibleMovesForQueen(piece) {
+function possibleMovesForQueen(position, color, board) {
     if(!piece) return [];
     let actualPosition = {
         row: piece.rowIndex,
@@ -123,7 +112,7 @@ function possibleMovesForQueen(piece) {
     return moves;   
 }
 
-function possibleMovesForKing(piece) {
+function possibleMovesForKing(position, color, board) {
     if(!piece) return [];
     let actualPosition = {
         row: piece.rowIndex,

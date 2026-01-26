@@ -13,16 +13,16 @@
   grid-template-rows: repeat(8, 1fr);
 }
 
-.cell-light-chess{
+.square.light{
   background-color: #f0d9b5;
 }
 
-.cell-dark-chess{
+.square.dark{
   background-color: #b58863;
 }
 
-.cell-light-chess,
-.cell-dark-chess {
+.square.light,
+.square.dark {
   font-size: 45px;
   display: flex;
   justify-content: center;

@@ -1,40 +1,33 @@
-// import wPawn from '../assets/pieces/w_pawn.svg';
-// import bPawn from '../assets/pieces/b_pawn.svg';
-// import bRook from '../assets/pieces/b_rook.svg';
-// import wRook from '../assets/pieces/w_rook.svg';
-// import bHorse from '../assets/pieces/b_horse.svg';
-// import wHorse from '../assets/pieces/w_horse.svg';
-// import bBishop from '../assets/pieces/b_bishop.svg';
-// import wBishop from '../assets/pieces/w_bishop.svg';
-// import bQueen from '../assets/pieces/b_queen.svg';
-// import wQueen from '../assets/pieces/w_queen.svg';
-// import bKing from '../assets/pieces/b_king.svg';
-// import wKing from '../assets/pieces/w_king.svg';
+
+
 const PIECES = {
-  r: "fa-solid fa-chess-rook",
-  R: "fa-regular fa-chess-rook",
-  n: "fa-solid fa-chess-knight",
-  N: "fa-regular fa-chess-knight",
-  b: "fa-solid fa-chess-bishop",
-  B: "fa-regular fa-chess-bishop",
-  q: "fa-solid fa-chess-queen",
-  Q: "fa-regular fa-chess-queen",
-  k: "fa-solid fa-chess-king",
-  K: "fa-regular fa-chess-king",
-  p: "fa-solid fa-chess-pawn",
-  P: "fa-regular fa-chess-pawn",
+  rook: "fa-solid fa-chess-rook",
+  ROOK: "fa-regular fa-chess-rook",
+  knight: "fa-solid fa-chess-knight",
+  KNIGHT: "fa-regular fa-chess-knight",
+  bishop: "fa-solid fa-chess-bishop",
+  BISHOP: "fa-regular fa-chess-bishop",
+  queen: "fa-solid fa-chess-queen",
+  QUEEN: "fa-regular fa-chess-queen",
+  king: "fa-solid fa-chess-king",
+  KING: "fa-regular fa-chess-king",
+  pawn: "fa-solid fa-chess-pawn",
+  PAWN: "fa-regular fa-chess-pawn",
   '': '',
 };
 
-function Piece({ piece , isLight , handleSelectPiece, possibleMoves, currentTurn}) {
- const isAPossibleMove = possibleMoves.some(move => move[0] === piece.rowIndex && move[1] === piece.cellIndex);
+const mapPiecesToIcons = (type, color) => {
+  const key = color === 'white' ? type.toUpperCase() : type.toLowerCase();
+  return PIECES[key] || '';
+}
+function Piece({ piece }) {
   return (
-    <div className={`piece`} onClick={() => handleSelectPiece(piece)}>
-        <div className={ (isLight ? "cell-light-chess" : "cell-dark-chess") + `${isAPossibleMove ? (currentTurn === 'W' ? ' possible-move-white' : ' possible-move-black') : ''}`} >
-           {piece ?  <i className={PIECES[piece.name]}></i> : <div></div>}
-        </div>
+    <div className={`piece ${piece.color}`}>
+      {mapPiecesToIcons(piece.type, piece.color) && (
+        <i className={mapPiecesToIcons(piece.type, piece.color)}></i>
+      )}
     </div>
-  ) 
-};
+  );
+}
 
 export default Piece
