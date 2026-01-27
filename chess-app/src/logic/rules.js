@@ -2,7 +2,7 @@ export function showPossibleMoves(piece, position, board) {
     if(!piece) return [];
     switch (piece.type) {   
         case 'pawn': // black pawn
-            return possibleMovesForPawn(position,piece.color,board); // Example moves
+            return possibleMovesForPawn(position,piece,board); // Example moves
         case 'rook': // black rook
             return possibleMovesForRook(position,piece.color,board); // Example moves
         case 'knight': // black knight
@@ -13,20 +13,44 @@ export function showPossibleMoves(piece, position, board) {
             return possibleMovesForQueen(position,piece.color,board); // Example moves
         case 'king': // black king
             return possibleMovesForKing(position,piece.color,board); // Example moves
-
     }
 
     return [];
 }
 
-function possibleMovesForPawn(position, color) {
-    if(color === 'white') {
-        if(position.row == 0) return [];
-        return [[position.row - 1, position.col]];
-    }
+// function possibleMovesForPawn(position, color) {
+//     if(color === 'white') {
+//         if(position.row == 0) return [];
+//         return [[position.row - 1, position.col]];
+//     }
 
-    if(position.row == 8 || position.col == 8) return [];
-    return [[position.row + 1, position.col]];
+//     if(position.row == 8 || position.col == 8) return [];
+//     return [[position.row + 1, position.col]];
+
+// }
+
+function possibleMovesForPawn(position, piece, board) {
+  let moves = [];
+  const direction = piece.color === 'white' ? -1 : 1;
+
+  const oneStep = position.row + direction;
+  if (isInsideBoard(oneStep, position.col) && isEmpty(board, oneStep, position.col)) {
+    moves.push([oneStep, position.col]);
+
+    const twoStep = position.row + direction * 2;
+    if (!piece.hasMoved && isInsideBoard(twoStep, position.col) && isEmpty(board, twoStep, position.col)) {
+      moves.push([twoStep, position.col]);
+    }
+  }
+
+  for (const dc of [-1, 1]) {
+    const r = position.row + direction;
+    const c = position.col + dc;
+    if (isInsideBoard(r, c) && isEnemy(board, r, c, piece.color)) {
+      moves.push([r, c]);
+    }
+  }
+  return moves;
 
 }
 
@@ -43,6 +67,10 @@ function possibleMovesForRook(position, color, board) {
         let r = position.row + dr;
         let c = position.col + dc;
         while (canExecuteMove(board, r, c, color)) {
+            if(isEnemy(board, r, c, color)) {
+                moves.push([r, c]);
+                break;
+            }
             moves.push([r, c]);
             r += dr;
             c += dc;
@@ -90,6 +118,10 @@ function possibleMovesForBishop(position, color,board) {
         let r = actualPosition.row + dr;
         let c = actualPosition.col + dc;
         while (canExecuteMove(board, r, c, color)) {
+            if(isEnemy(board, r, c, color)) {
+                moves.push([r, c]);
+                break;
+            }
             moves.push([r, c]);
             r += dr;
             c += dc;
@@ -99,13 +131,9 @@ function possibleMovesForBishop(position, color,board) {
 }
 
 function possibleMovesForQueen(position, color, board) {
-    let actualPosition = { 
-        row: position.row,
-        col: position.col
-    };
     let moves = [];
-    moves.push(...possibleMovesForRook(position, color));
-    moves.push(...possibleMovesForBishop(position, color));
+    moves.push(...possibleMovesForRook(position, color, board));
+    moves.push(...possibleMovesForBishop(position, color, board));
     return moves;   
 }
 
@@ -143,5 +171,5 @@ const isEnemy = (board, row, col, color) =>{
 }
 
 const canExecuteMove = (board, row, col, color) => {
-    return isInsideBoard(row, col) && !isEnemy(board, row, col, color) && isEmpty(board, row, col);
+    return isInsideBoard(row, col) && (isEnemy(board, row, col, color) || isEmpty(board, row, col));
 }

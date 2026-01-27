@@ -1,5 +1,7 @@
-function GameInfo({ turn }) {
+import {useGame} from '../contexts/GameContext.jsx';
 
+function GameInfo() {
+  const {turn} = useGame();
   
   return (
     <div className="game-info">

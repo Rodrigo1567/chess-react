@@ -6,9 +6,9 @@ function Square({ row, col, piece, isSelected, onClick, isPossibleMove, turn }) 
   return (
     <>
         <div
-        className={`square ${isDark ? 'dark' : 'light'} ${isSelected ? 'selected' : ''} ${isPossibleMove ? 'possible-move' : ''} ${piece != null && turn == (piece ? piece.color : null) ? 'clickable' : 'not-clickable'}`}
+        className={`square ${isDark ? 'dark' : 'light'} ${isSelected ? 'selected' : ''} ${isPossibleMove ? 'possible-move' : ''} ${isPossibleMove && (piece && piece.color != turn ? 'possible-move-enemy' : '')} ${piece != null && turn == (piece ? piece.color : null) ? 'clickable' : 'not-clickable'}`}
         onClick={() => {
-          if(turn === (piece ? piece.color : null) || piece === null)
+          // if(turn === (piece ? piece.color : null) || piece === null)
             onClick(row, col, piece);
         }}
         >
