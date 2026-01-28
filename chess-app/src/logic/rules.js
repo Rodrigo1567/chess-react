@@ -162,7 +162,6 @@ const isInsideBoard = (row, col) =>
   row >= 0 && row < 8 && col >= 0 && col < 8;
 
 const isEmpty = (board, row, col) => {
-    console.log('Checking if position is empty:', row, col, 'Value:', board[row][col]);
     return board[row][col] == null;
 }
 
@@ -172,4 +171,75 @@ const isEnemy = (board, row, col, color) =>{
 
 const canExecuteMove = (board, row, col, color) => {
     return isInsideBoard(row, col) && (isEnemy(board, row, col, color) || isEmpty(board, row, col));
+}
+
+export function isCheckmate(board, color) {
+  if(!color || !board) return false;
+  console.log('Turno al llamar checkmate:', color);
+  let KingInCheck = isKingInCheck(board, color);
+  console.log('King in check:', KingInCheck);
+  let hasAnyLegalMove = hasLegalMove(board, color);
+  console.log('Has any legal move:', hasAnyLegalMove);
+  if(!KingInCheck) return false;
+  if(hasAnyLegalMove) return false;
+  return true;
+}
+
+function findKing(board, color) {
+  for (let row = 0; row < 8; row++) {
+    for (let col = 0; col < 8; col++) {
+      const piece = board[row][col];
+      if (piece && piece.type === 'king' && piece.color === color) {
+        return { row, col };
+      }
+    }
+  }
+  return null;
+}
+
+function isKingInCheck(board, color) {
+  const kingPos = findKing(board, color);
+  const enemyColor = color === 'white' ? 'black' : 'white';
+
+  for (let row = 0; row < 8; row++) {
+    for (let col = 0; col < 8; col++) {
+      const piece = board[row][col];
+      if (piece && piece.color === enemyColor) {
+        const moves = showPossibleMoves(piece, { row, col }, board);
+        if (moves.some(m => m[0] === kingPos.row && m[1] === kingPos.col)) {
+          return true;
+        }
+      }
+    }
+  }
+
+  return false;
+}
+
+function simulateMove(board, from, to) {
+  const newBoard = structuredClone(board);
+  newBoard[to[0]][to[1]] = newBoard[from[0]][from[1]];
+  newBoard[from[0]][from[1]] = null;
+  return newBoard;
+}
+
+function hasLegalMove(board, color) {
+  console.log('Turno al verificar movimientos legales:', color);
+  for (let row = 0; row < 8; row++) {
+    for (let col = 0; col < 8; col++) {
+      const piece = board[row][col];
+      if (piece && piece.color === color) {
+        const from = { row, col };
+        const moves = showPossibleMoves(piece, from, board);
+
+        for (const move of moves) {
+          const newBoard = simulateMove(board, [row, col], move);
+          if (!isKingInCheck(newBoard, color)) {
+            return true;
+          }
+        }
+      }
+    }
+  }
+  return false;
 }

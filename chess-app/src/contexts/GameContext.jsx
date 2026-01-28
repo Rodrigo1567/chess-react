@@ -17,5 +17,10 @@ export function GameProvider({ children }) {
 }
 
 export function useGame() {
-    return useContext(GameContext);
+    const context = useContext(GameContext);
+    if (!context) {
+        console.error('useGame must be used within a GameProvider');
+        return { turn: undefined, nextTurn: () => {} };
+    }
+    return context;
 }

@@ -1,13 +1,20 @@
 import { use, useEffect , useState} from "react";
 import Square from "./Square";
+import Piece from "./Piece";
 
-
-function Board({board, onSquareClick, selected, possibleMoves, turn}) {
+function Board({board, droppedPieces, onSquareClick, selected, possibleMoves, turn}) {
+  let droppedWhitePieces = droppedPieces.white;
+  let droppedBlackPieces = droppedPieces.black;
 
   return (
-    <>
-    {console.log('Posibles movimientos',possibleMoves)}
-        <h2 className="title-app">Chess App</h2>
+    <div className="chess-container">
+        <div className="dropped-white-pieces">
+            {droppedWhitePieces.map((piece, index) => (
+                <div key={index} className="dropped-piece">
+                    <Piece piece={piece}/>
+                </div>
+            ))}
+        </div>
         <div className="board-chess">
             {board.map((row, rowIndex) => (
                 row.map((piece, colIndex) => {
@@ -24,8 +31,15 @@ function Board({board, onSquareClick, selected, possibleMoves, turn}) {
                 })
             ))}
         </div>
+        <div className="dropped-black-pieces">
+            {droppedBlackPieces.map((piece, index) => (
+                <div key={index} className="dropped-piece">
+                     <Piece piece={piece}/>
+                </div>
+            ))}
+        </div>
 
-    </>
+    </div>
   ) 
 }
 

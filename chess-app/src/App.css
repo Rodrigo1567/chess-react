@@ -81,3 +81,90 @@ i.fa-solid{
 .piece.white i{
   color: white;
 }
+
+.winner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+}
+
+.winner-button
+{
+  margin-top: 15px;
+  border: 1px solid #b58863;;
+}
+
+.winner-button.reset
+{
+  margin-bottom: 15px;
+}
+
+.header{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: column;
+  margin: auto;
+}
+
+.chess-container{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.dropped-white-pieces, .dropped-black-pieces{
+  background: linear-gradient(135deg, #c27930 0%, #1f1f1f 100%);
+  width: 120px;
+  height: 700px;
+  display: flex;
+  flex-direction: column;
+  margin: 0 15px;
+  align-items: center;
+  border-radius: 12px;
+  border: 2px solid #444;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  padding: 15px 0;
+  overflow-y: auto;
+}
+
+.dropped-white-pieces {
+  border-left: 4px solid #f0d9b5;
+}
+
+.dropped-black-pieces {
+  border-left: 4px solid #b58863;
+}
+
+.dropped-white-pieces::-webkit-scrollbar,
+.dropped-black-pieces::-webkit-scrollbar {
+  width: 6px;
+}
+
+.dropped-white-pieces::-webkit-scrollbar-track,
+.dropped-black-pieces::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.dropped-white-pieces::-webkit-scrollbar-thumb,
+.dropped-black-pieces::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+}
+
+.dropped-white-pieces::-webkit-scrollbar-thumb:hover,
+.dropped-black-pieces::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.dropped-piece i{
+  font-size: 35px;
+  margin: 8px 0;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+  transition: transform 0.2s ease;
+}
+
+.dropped-piece i:hover {
+  transform: scale(1.1);
+}
